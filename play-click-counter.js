@@ -54,9 +54,6 @@
     true
   );
 
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('stats') !== '1') return;
-
   var badge = document.getElementById('play-stats-badge');
   var valueEl = document.getElementById('play-stats-value');
   if (!badge || !valueEl) return;

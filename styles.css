@@ -312,3 +312,68 @@ a {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+/* Бейдж счётчика кликов Play — только при ?stats=1 */
+.play-stats {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  min-width: 7.5rem;
+  padding: 0.55rem 0.75rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(228, 197, 122, 0.55);
+  background: linear-gradient(160deg, #0c1a33 0%, #13284a 55%, #0a1426 100%);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(228, 197, 122, 0.18);
+  color: #e4c57a;
+  font-family: var(--font-body);
+  pointer-events: none;
+  user-select: none;
+}
+
+.play-stats[hidden] {
+  display: none !important;
+}
+
+.play-stats__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(240, 217, 160, 0.78);
+}
+
+.play-stats__value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #f0d9a0;
+  font-variant-numeric: tabular-nums;
+}
+
+.play-stats__hint {
+  font-size: 0.62rem;
+  color: rgba(183, 169, 152, 0.85);
+}
+
+.play-stats--error .play-stats__value {
+  color: #c4b39a;
+}
+
+@media (max-width: 480px) {
+  .play-stats {
+    right: 0.65rem;
+    bottom: 0.65rem;
+    min-width: 6.5rem;
+    padding: 0.45rem 0.6rem;
+  }
+
+  .play-stats__value {
+    font-size: 1.05rem;
+  }
+}

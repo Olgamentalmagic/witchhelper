@@ -1,6 +1,5 @@
 /**
- * Считает только клики по кнопке #play-store-link («Открыть в Google Play»).
- * Кнопка «Скачать в Google Play» (#download) и прочие ссылки не учитываются.
+ * Считает клики по любой ссылке .js-play-hit (кнопки Google Play).
  * Хранение: бесплатный Abacus API (без ключей).
  */
 (function () {
@@ -8,11 +7,11 @@
 
   var HIT_URL = 'https://abacus.jasoncameron.dev/hit/witchhelper/playclicks';
   var GET_URL = 'https://abacus.jasoncameron.dev/get/witchhelper/playclicks';
-  var BUTTON_ID = 'play-store-link';
+  var HIT_CLASS = 'js-play-hit';
   var REFRESH_MS = 30000;
 
   function isPlayStoreButton(el) {
-    return !!(el && el.id === BUTTON_ID);
+    return !!(el && el.classList && el.classList.contains(HIT_CLASS));
   }
 
   function bump() {
@@ -59,7 +58,7 @@
   if (!badge || !valueEl) return;
 
   badge.hidden = false;
-  badge.title = 'Сколько раз нажали «Открыть в Google Play»';
+  badge.title = 'Сколько раз нажали кнопку Google Play';
 
   function formatCount(n) {
     var num = Number(n);

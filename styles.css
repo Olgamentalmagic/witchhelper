@@ -163,65 +163,28 @@ a {
   font-size: 1.05rem;
 }
 
-/* Official-looking Google Play CTA */
+/* Official Google Play badge (Google branding asset) */
 .btn-play {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  min-height: 52px;
-  padding: 0.55rem 1.15rem 0.55rem 0.85rem;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: #000;
-  color: #fff;
+  line-height: 0;
   text-decoration: none;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .btn-play:hover {
   transform: translateY(-1px);
-  background: #111;
-  color: #fff;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.42);
+  opacity: 0.92;
 }
 
-.btn-play__icon {
-  flex: 0 0 auto;
+.btn-play__badge {
+  width: 180px;
+  height: auto;
   display: block;
 }
 
-.btn-play__text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1.05;
-}
-
-.btn-play__eyebrow {
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.btn-play__title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-}
-
-.btn-play--lg {
-  min-height: 60px;
-  padding: 0.7rem 1.4rem 0.7rem 1rem;
-}
-
-.btn-play--lg .btn-play__eyebrow {
-  font-size: 0.74rem;
-}
-
-.btn-play--lg .btn-play__title {
-  font-size: 1.28rem;
+.btn-play--lg .btn-play__badge {
+  width: 220px;
 }
 
 .section {

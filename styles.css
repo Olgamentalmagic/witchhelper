@@ -184,7 +184,11 @@ a {
 }
 
 .btn-play--lg .btn-play__badge {
-  width: 220px;
+  width: min(280px, 78vw);
+}
+
+.download h2 {
+  margin-bottom: 1.5rem;
 }
 
 .section {

@@ -131,6 +131,11 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+  align-items: center;
+}
+
+.cta-row--stores {
+  gap: 0.55rem 0.85rem;
 }
 
 .btn {
@@ -163,32 +168,52 @@ a {
   font-size: 1.05rem;
 }
 
-/* Official Google Play badge (Google branding asset) */
-.btn-play {
+/* Official store badges */
+.btn-store {
   display: inline-flex;
   align-items: center;
   line-height: 0;
   text-decoration: none;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
 }
 
-.btn-play:hover {
+.btn-store:hover {
   transform: translateY(-1px);
   opacity: 0.92;
+  filter: brightness(1.06);
 }
 
-.btn-play__badge {
-  width: 180px;
-  height: auto;
+.btn-store__badge {
   display: block;
+  height: auto;
 }
 
-.btn-play--lg .btn-play__badge {
+.btn-store__badge--play {
+  width: 180px;
+}
+
+.btn-store__badge--apple {
+  width: 152px;
+}
+
+.btn-store--lg .btn-store__badge--play {
   width: min(280px, 78vw);
+}
+
+.btn-store--lg .btn-store__badge--apple {
+  width: min(236px, 68vw);
 }
 
 .download h2 {
   margin-bottom: 1.5rem;
+}
+
+.download__stores {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem 1.1rem;
 }
 
 .section {
@@ -326,22 +351,19 @@ a {
   }
 }
 
-/* Бейдж счётчика кликов Play — только при ?stats=1 */
-.play-stats {
+/* Полупрозрачные счётчики кликов Play / App Store */
+.store-stats {
   position: fixed;
-  right: 0.85rem;
   bottom: 0.85rem;
   z-index: 40;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   gap: 0.05rem;
   min-width: 5.5rem;
   padding: 0.4rem 0.55rem 0.35rem;
   border-radius: 10px;
   border: 1px solid rgba(228, 197, 122, 0.14);
   background: rgba(10, 18, 36, 0.28);
-  box-shadow: none;
   color: rgba(228, 197, 122, 0.45);
   font-family: var(--font-body);
   pointer-events: none;
@@ -350,18 +372,28 @@ a {
   backdrop-filter: blur(2px);
 }
 
-.play-stats[hidden] {
+.store-stats--right {
+  right: 0.85rem;
+  align-items: flex-end;
+}
+
+.store-stats--left {
+  left: 0.85rem;
+  align-items: flex-start;
+}
+
+.store-stats[hidden] {
   display: none !important;
 }
 
-.play-stats__label {
+.store-stats__label {
   font-size: 0.58rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: rgba(240, 217, 160, 0.42);
 }
 
-.play-stats__value {
+.store-stats__value {
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.1;
@@ -369,25 +401,32 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
-.play-stats__hint {
+.store-stats__hint {
   font-size: 0.52rem;
   color: rgba(183, 169, 152, 0.35);
 }
 
-.play-stats--error .play-stats__value {
+.store-stats--error .store-stats__value {
   color: rgba(196, 179, 154, 0.4);
 }
 
 @media (max-width: 480px) {
-  .play-stats {
-    right: 0.5rem;
+  .store-stats {
     bottom: 0.5rem;
     min-width: 4.8rem;
     padding: 0.32rem 0.45rem;
     opacity: 0.22;
   }
 
-  .play-stats__value {
+  .store-stats--right {
+    right: 0.5rem;
+  }
+
+  .store-stats--left {
+    left: 0.5rem;
+  }
+
+  .store-stats__value {
     font-size: 0.85rem;
   }
 }

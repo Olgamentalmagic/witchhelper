@@ -1,79 +1,27 @@
 /**
- * Считает клики по .js-play-hit и .js-appstore-hit.
- * Хранение: бесплатный Abacus API (без ключей).
+ * Показывает счётчики Abacus.
+ * Сами клики считаются на промежуточных страницах go/play.html и go/ios.html
+ * (так надёжнее во Facebook/Instagram WebView).
  */
 (function () {
   'use strict';
 
-  var REFRESH_MS = 30000;
+  var REFRESH_MS = 15000;
 
   var counters = [
     {
-      hitClass: 'js-play-hit',
-      hitUrl: 'https://abacus.jasoncameron.dev/hit/witchhelper/playclicks',
       getUrl: 'https://abacus.jasoncameron.dev/get/witchhelper/playclicks',
       badgeId: 'play-stats-badge',
       valueId: 'play-stats-value',
-      title: 'Сколько раз нажали кнопку Google Play',
+      title: 'Клики по кнопке Google Play (через go/play)',
     },
     {
-      hitClass: 'js-appstore-hit',
-      hitUrl: 'https://abacus.jasoncameron.dev/hit/witchhelper/appstoreclicks',
       getUrl: 'https://abacus.jasoncameron.dev/get/witchhelper/appstoreclicks',
       badgeId: 'appstore-stats-badge',
       valueId: 'appstore-stats-value',
-      title: 'Сколько раз нажали кнопку App Store',
+      title: 'Клики по кнопке App Store (через go/ios)',
     },
   ];
-
-  function bump(url) {
-    try {
-      fetch(url, {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-store',
-        credentials: 'omit',
-        keepalive: true,
-      }).catch(function () {});
-    } catch (e) {
-      /* ignore */
-    }
-  }
-
-  function matchCounter(el) {
-    if (!el || !el.classList) return null;
-    for (var i = 0; i < counters.length; i++) {
-      if (el.classList.contains(counters[i].hitClass)) return counters[i];
-    }
-    return null;
-  }
-
-  document.addEventListener(
-    'click',
-    function (ev) {
-      var t = ev.target;
-      if (!t || !t.closest) return;
-      var a = t.closest('a');
-      var c = matchCounter(a);
-      if (!c) return;
-      bump(c.hitUrl);
-    },
-    true
-  );
-
-  document.addEventListener(
-    'auxclick',
-    function (ev) {
-      if (ev.button !== 1) return;
-      var t = ev.target;
-      if (!t || !t.closest) return;
-      var a = t.closest('a');
-      var c = matchCounter(a);
-      if (!c) return;
-      bump(c.hitUrl);
-    },
-    true
-  );
 
   function formatCount(n) {
     var num = Number(n);

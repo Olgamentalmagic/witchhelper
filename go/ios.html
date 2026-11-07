@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Переход в App Store…</title>
+  <meta http-equiv="refresh" content="2;url=https://apps.apple.com/ru/app/witch-helper/id6828506257" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: system-ui, sans-serif;
+      background: #07060f;
+      color: #f3ebe0;
+    }
+    a { color: #f0d9a0; }
+  </style>
+  <script>
+    (function () {
+      var HIT = 'https://abacus.jasoncameron.dev/hit/witchhelper/appstoreclicks';
+      var DEST = 'https://apps.apple.com/ru/app/witch-helper/id6828506257';
+
+      function ping() {
+        try {
+          var img = new Image();
+          img.src = HIT + (HIT.indexOf('?') >= 0 ? '&' : '?') + 't=' + Date.now();
+        } catch (e) {}
+        try {
+          fetch(HIT, { method: 'GET', mode: 'no-cors', cache: 'no-store', credentials: 'omit', keepalive: true });
+        } catch (e) {}
+        try {
+          var x = new XMLHttpRequest();
+          x.open('GET', HIT, true);
+          x.send();
+        } catch (e) {}
+      }
+
+      ping();
+      try {
+        var s = document.createElement('script');
+        s.src = HIT + (HIT.indexOf('?') >= 0 ? '&' : '?') + 'cb=' + Date.now();
+        s.async = true;
+        document.head.appendChild(s);
+      } catch (e) {}
+      setTimeout(function () {
+        window.location.replace(DEST);
+      }, 400);
+    })();
+  </script>
+</head>
+<body>
+  <p>Открываем App Store… <a href="https://apps.apple.com/ru/app/witch-helper/id6828506257">Нажмите сюда, если не перешло</a></p>
+</body>
+</html>

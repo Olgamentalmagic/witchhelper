@@ -1,12 +1,18 @@
 /**
- * Счётчик тапов по кнопкам магазина.
- * Сразу ведёт в Play / App Store (без промежуточных страниц).
- * Учёт: img + fetch + XHR на pointerdown/touchstart — до ухода со страницы.
+ * Тап по кнопке магазина:
+ * - Android → market:// (приложение Google Play), иначе https
+ * - iOS → itms-apps:// (приложение App Store), иначе https
+ * - десктоп → обычный https
+ * Счётчик: ping до перехода.
  */
 (function () {
   'use strict';
 
   var REFRESH_MS = 15000;
+  var PLAY_HTTPS = 'https://play.google.com/store/apps/details?id=ru.witchhelper.app';
+  var PLAY_MARKET = 'market://details?id=ru.witchhelper.app';
+  var IOS_HTTPS = 'https://apps.apple.com/ru/app/witch-helper/id6828506257';
+  var IOS_ITMS = 'itms-apps://apps.apple.com/app/id6828506257';
 
   var counters = [
     {
@@ -16,6 +22,7 @@
       badgeId: 'play-stats-badge',
       valueId: 'play-stats-value',
       title: 'Тапы по кнопке Google Play',
+      kind: 'play',
     },
     {
       hitClass: 'js-appstore-hit',
@@ -24,8 +31,19 @@
       badgeId: 'appstore-stats-badge',
       valueId: 'appstore-stats-value',
       title: 'Тапы по кнопке App Store',
+      kind: 'ios',
     },
   ];
+
+  function ua() {
+    return navigator.userAgent || '';
+  }
+  function isAndroid() {
+    return /Android/i.test(ua());
+  }
+  function isIOS() {
+    return /iPhone|iPad|iPod/i.test(ua()) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
 
   function ping(url) {
     try {
@@ -56,26 +74,40 @@
     return null;
   }
 
-  function onIntent(ev) {
+  function openNative(kind) {
+    if (kind === 'play' && isAndroid()) {
+      window.location.href = PLAY_MARKET;
+      setTimeout(function () {
+        window.location.href = PLAY_HTTPS;
+      }, 900);
+      return true;
+    }
+    if (kind === 'ios' && isIOS()) {
+      window.location.href = IOS_ITMS;
+      setTimeout(function () {
+        window.location.href = IOS_HTTPS;
+      }, 900);
+      return true;
+    }
+    return false;
+  }
+
+  function onClick(ev) {
     var t = ev.target;
     if (!t || !t.closest) return;
     var a = t.closest('a');
     var c = matchCounter(a);
     if (!c) return;
-    // не дублировать на одном жесте pointerdown+click
-    if (a.getAttribute('data-hit-sent') === '1') return;
-    a.setAttribute('data-hit-sent', '1');
+
     ping(c.hitUrl);
-    setTimeout(function () {
-      try {
-        a.removeAttribute('data-hit-sent');
-      } catch (e) {}
-    }, 2000);
+
+    // На телефоне — сразу в приложение магазина (не веб-вкладка).
+    if (openNative(c.kind)) {
+      ev.preventDefault();
+    }
   }
 
-  document.addEventListener('pointerdown', onIntent, true);
-  document.addEventListener('touchstart', onIntent, { capture: true, passive: true });
-  document.addEventListener('click', onIntent, true);
+  document.addEventListener('click', onClick, true);
 
   function formatCount(n) {
     var num = Number(n);

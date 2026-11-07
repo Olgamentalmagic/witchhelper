@@ -1,9 +1,9 @@
 /**
- * Тап по кнопке магазина:
- * - Android → market:// (приложение Google Play), иначе https
- * - iOS → itms-apps:// (приложение App Store), иначе https
- * - десктоп → обычный https
- * Счётчик: ping до перехода.
+ * Тап по кнопке магазина → сразу приложение Play / App Store с установкой.
+ * Android: intent:// → market:// → https
+ * iOS: itms-apps:// → https
+ * Десктоп: обычный https
+ * Счётчик: ping на pointerdown/click до ухода.
  */
 (function () {
   'use strict';
@@ -11,8 +11,14 @@
   var REFRESH_MS = 15000;
   var PLAY_HTTPS = 'https://play.google.com/store/apps/details?id=ru.witchhelper.app';
   var PLAY_MARKET = 'market://details?id=ru.witchhelper.app';
+  // Intent надёжнее в WebView Facebook/Instagram, чем голый market://
+  var PLAY_INTENT =
+    'intent://details?id=ru.witchhelper.app#Intent;scheme=market;package=com.android.vending;' +
+    'S.browser_fallback_url=' +
+    encodeURIComponent(PLAY_HTTPS) +
+    ';end';
   var IOS_HTTPS = 'https://apps.apple.com/ru/app/witch-helper/id6828506257';
-  var IOS_ITMS = 'itms-apps://apps.apple.com/app/id6828506257';
+  var IOS_ITMS = 'itms-apps://apps.apple.com/ru/app/witch-helper/id6828506257';
 
   var counters = [
     {
@@ -42,7 +48,10 @@
     return /Android/i.test(ua());
   }
   function isIOS() {
-    return /iPhone|iPad|iPod/i.test(ua()) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    return (
+      /iPhone|iPad|iPod/i.test(ua()) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    );
   }
 
   function ping(url) {
@@ -76,10 +85,16 @@
 
   function openNative(kind) {
     if (kind === 'play' && isAndroid()) {
-      window.location.href = PLAY_MARKET;
+      // Сначала intent (FB/Instagram WebView), затем market, иначе https
+      window.location.href = PLAY_INTENT;
+      setTimeout(function () {
+        try {
+          window.location.href = PLAY_MARKET;
+        } catch (e) {}
+      }, 400);
       setTimeout(function () {
         window.location.href = PLAY_HTTPS;
-      }, 900);
+      }, 1200);
       return true;
     }
     if (kind === 'ios' && isIOS()) {
@@ -92,22 +107,35 @@
     return false;
   }
 
-  function onClick(ev) {
+  function onIntent(ev) {
     var t = ev.target;
     if (!t || !t.closest) return;
     var a = t.closest('a');
     var c = matchCounter(a);
     if (!c) return;
 
-    ping(c.hitUrl);
+    // не дублировать ping на pointerdown+click одного жеста
+    if (a.getAttribute('data-hit-sent') !== '1') {
+      a.setAttribute('data-hit-sent', '1');
+      ping(c.hitUrl);
+      setTimeout(function () {
+        try {
+          a.removeAttribute('data-hit-sent');
+        } catch (e) {}
+      }, 2000);
+    }
 
-    // На телефоне — сразу в приложение магазина (не веб-вкладка).
+    // Только на click/pointerup-эквивалент открываем магазин (не на touchstart)
+    if (ev.type !== 'click') return;
+
     if (openNative(c.kind)) {
       ev.preventDefault();
     }
   }
 
-  document.addEventListener('click', onClick, true);
+  document.addEventListener('pointerdown', onIntent, true);
+  document.addEventListener('touchstart', onIntent, { capture: true, passive: true });
+  document.addEventListener('click', onIntent, true);
 
   function formatCount(n) {
     var num = Number(n);
